@@ -578,11 +578,14 @@ class msOrderHandler implements msOrderInterface
             ? $cart['total_cost']
             : 0;
 
+        $time = '';
+
         /** @var msDelivery $delivery */
         if (!empty($this->order['delivery']) && $delivery = $this->modx->getObject('msDelivery',
                 array('id' => $this->order['delivery']))
         ) {
             $cost = $delivery->getCost($this, $cost);
+            $time = $delivery->getTime($this);
         }
 
         /** @var msPayment $payment */
@@ -606,7 +609,10 @@ class msOrderHandler implements msOrderInterface
 
         return $only_cost
             ? $cost
-            : $this->success('', array('cost' => $cost));
+            : $this->success('', array(
+                'cost' => $cost,
+                'time' => $time,
+            ));
     }
 
     /**

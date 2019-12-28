@@ -16,6 +16,17 @@ interface msDeliveryInterface
 
 
     /**
+     * Returns delivery time depending on the method of delivery
+     *
+     * @param msOrderInterface $order
+     * @param msDelivery $delivery
+     *
+     * @return string
+     */
+    public function getTime(msOrderInterface $order, msDelivery $delivery);
+
+
+    /**
      * Returns failure response
      *
      * @param string $message
@@ -74,7 +85,21 @@ class msDeliveryHandler implements msDeliveryInterface
         if (empty($this->ms2->cart)) {
             $this->ms2->loadServices($this->ms2->config['ctx']);
         }
+
         $cart = $this->ms2->cart->status();
+        $hash = 'ms2delivery/' . md5(json_encode(array(
+            $delivery->get('id'),
+            $cart['total_cost'],
+            $cart['total_weight'],
+        )));
+
+        $cacheTime = $delivery->get('cache_time');
+        if ($cacheTime > 0){
+            if ($cache = $this->modx->cacheManager->get($hash)){
+                return $cache;
+            }
+        }
+
         $weight_price = $delivery->get('weight_price');
         //$distance_price = $delivery->get('distance_price');
 
@@ -88,7 +113,23 @@ class msDeliveryHandler implements msDeliveryInterface
         }
         $cost += $add_price;
 
+        if ($cacheTime > 0){
+            $this->modx->cacheManager->set($hash, $cost, $cacheTime * 60);
+        }
+
         return $cost;
+    }
+
+
+    /**
+     * @param msOrderInterface $order
+     * @param msDelivery $delivery
+     *
+     * @return string
+     */
+    public function getTime(msOrderInterface $order, msDelivery $delivery)
+    {
+        return $delivery->get('time');
     }
 
 
@@ -124,4 +165,5 @@ class msDeliveryHandler implements msDeliveryInterface
 
         return $this->ms2->success($message, $data, $placeholders);
     }
+
 }
