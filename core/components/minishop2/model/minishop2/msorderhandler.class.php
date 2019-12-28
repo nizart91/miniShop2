@@ -578,21 +578,29 @@ class msOrderHandler implements msOrderInterface
             ? $cart['total_cost']
             : 0;
 
-        $time = '';
+        $deliveries = array();
+        if (!empty($this->order['delivery'])) {
+            $criteria = $only_cost ? array('id' => $this->order['delivery']) : array('active' => 1);
+            foreach ($this->modx->getIterator('msDelivery', $criteria) as $delivery) {
+                /** @var msDelivery $delivery */
+                $result = $delivery->getCost($this, $cost);
+                if (!($result instanceof msDeliveryCostResult)){
+                    /** @var msDeliveryCostResult $result */
+                    $result = msDeliveryCostResult::getInstance($result, $delivery->get('time'));
+                }
+                $deliveries[$delivery->id] = $result->toArray();
+            }
 
-        /** @var msDelivery $delivery */
-        if (!empty($this->order['delivery']) && $delivery = $this->modx->getObject('msDelivery',
-                array('id' => $this->order['delivery']))
-        ) {
-            $cost = $delivery->getCost($this, $cost);
-            $time = $delivery->getTime($this);
-        }
-
-        /** @var msPayment $payment */
-        if (!empty($this->order['payment']) && $payment = $this->modx->getObject('msPayment',
+            /** @var msPayment $payment */
+            if (!empty($this->order['payment']) && $payment = $this->modx->getObject('msPayment',
                 array('id' => $this->order['payment']))
-        ) {
-            $cost = $payment->getCost($this, $cost);
+            ) {
+                foreach ($deliveries as &$values) {
+                    $values['cost'] = $payment->getCost($this, $values['cost']);
+                }
+            }
+
+            $cost = $deliveries[$this->order['delivery']]['cost'];
         }
 
         $response = $this->ms2->invokeEvent('msOnGetOrderCost', array(
@@ -611,7 +619,7 @@ class msOrderHandler implements msOrderInterface
             ? $cost
             : $this->success('', array(
                 'cost' => $cost,
-                'time' => $time,
+                'deliveries' => $deliveries,
             ));
     }
 

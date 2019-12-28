@@ -76,24 +76,6 @@ class msDelivery extends xPDOSimpleObject
         return $this->handler->getCost($order, $this, $cost);
     }
 
-    /**
-     * Returns delivery time depending on the method of delivery
-     *
-     * @param msOrderInterface|msOrderHandler $order
-     * @param float $cost Current cost of order
-     *
-     * @return float
-     */
-    public function getTime(msOrderInterface $order)
-    {
-        if (!is_object($this->handler) || !($this->handler instanceof msDeliveryInterface)) {
-            if (!$this->loadHandler()) {
-                return '';
-            }
-        }
-
-        return $this->handler->getTime($order, $this);
-    }
 
     /**
      * Returns id of first active payment method for this delivery
