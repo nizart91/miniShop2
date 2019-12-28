@@ -47,7 +47,7 @@ Ext.extend(miniShop2.window.CreateDelivery, miniShop2.window.Default, {
         }, {
             layout: 'column',
             items: [{
-                columnWidth: .5,
+                columnWidth: .3,
                 layout: 'form',
                 defaults: {msgTarget: 'under'},
                 items: [{
@@ -58,16 +58,9 @@ Ext.extend(miniShop2.window.CreateDelivery, miniShop2.window.Default, {
                     decimalPrecision: 2,
                     anchor: '99%',
                     id: config.id + '-weight-price'
-                }, {
-                    xtype: 'textfield',
-                    fieldLabel: _('ms2_order_requires'),
-                    description: _('ms2_order_requires_help'),
-                    name: 'requires',
-                    anchor: '99%',
-                    id: config.id + '-requires'
                 }]
             }, {
-                columnWidth: .5,
+                columnWidth: .3,
                 layout: 'form',
                 defaults: {msgTarget: 'under'},
                 items: [{
@@ -78,7 +71,40 @@ Ext.extend(miniShop2.window.CreateDelivery, miniShop2.window.Default, {
                     decimalPrecision: 2,
                     anchor: '99%',
                     id: config.id + '-distance-price'
-                }, {
+                }],
+            }, {
+                columnWidth: .3,
+                layout: 'form',
+                defaults: {msgTarget: 'under'},
+                items: [{
+                    xtype: 'numberfield',
+                    fieldLabel: _('ms2_cache_time'),
+                    description: _('ms2_cache_time_help'),
+                    name: 'cache_time',
+                    decimalPrecision: 0,
+                    anchor: '99%',
+                    id: config.id + '-cache-time'
+                }],
+            }]
+        }, {
+            layout: 'column',
+            items: [{
+                columnWidth: .5,
+                layout: 'form',
+                defaults: {msgTarget: 'under'},
+                items: [{
+                    xtype: 'textfield',
+                    fieldLabel: _('ms2_time'),
+                    description: _('ms2_time_help'),
+                    name: 'time',
+                    anchor: '99%',
+                    id: config.id + '-time'
+                }]
+            }, {
+                columnWidth: .5,
+                layout: 'form',
+                defaults: {msgTarget: 'under'},
+                items: [{
                     xtype: 'minishop2-combo-classes',
                     type: 'delivery',
                     fieldLabel: _('ms2_class'),
@@ -99,6 +125,20 @@ Ext.extend(miniShop2.window.CreateDelivery, miniShop2.window.Default, {
             name: 'description',
             anchor: '99%',
             id: config.id + '-description'
+        }, {
+            xtype: 'textfield',
+            fieldLabel: _('ms2_order_fields'),
+            description: _('ms2_order_fields_help'),
+            name: 'fields',
+            anchor: '99%',
+            id: config.id + '-fields'
+        }, {
+            xtype: 'textfield',
+            fieldLabel: _('ms2_order_requires'),
+            description: _('ms2_order_requires_help'),
+            name: 'requires',
+            anchor: '99%',
+            id: config.id + '-requires'
         }, {
             xtype: 'xcheckbox',
             boxLabel: _('ms2_active'),

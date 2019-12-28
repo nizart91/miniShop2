@@ -348,7 +348,22 @@ class msOrderHandler implements msOrderInterface
             ? array()
             : array_map('trim', explode(',', $requires));
 
-        return $this->success('', array('requires' => $requires));
+        if (!in_array('delivery', $requires)){
+            $requires[] = 'delivery';
+        }
+        if (!in_array('payment', $requires)){
+            $requires[] = 'payment';
+        }
+
+        $fields = $delivery->get('fields');
+        $fields = empty($fields)
+            ? array()
+            : array_map('trim', explode(',', $fields));
+
+        $fields = array_merge($fields, $requires);
+        $fields = array_unique($fields);
+
+        return $this->success('', array('requires' => $requires, 'fields' => $fields));
     }
 
 
@@ -387,6 +402,11 @@ class msOrderHandler implements msOrderInterface
         }
         if (!empty($errors)) {
             return $this->error('ms2_order_err_requires', $errors);
+        }
+        foreach (array_keys($this->order) as $v) {
+            if (!in_array($v, $response['data']['fields'])){
+                $this->remove($v);
+            }
         }
 
         $user_id = $this->ms2->getCustomerId();

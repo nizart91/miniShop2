@@ -184,6 +184,7 @@
         <field key="price" dbtype="varchar" precision="11" phptype="string" null="true" default="0"/>
         <field key="weight_price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0"/>
         <field key="distance_price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0"/>
+        <field key="time" dbtype="varchar" precision="50" phptype="string" null="true" default="0"/>
         <field key="logo" dbtype="varchar" precision="255" phptype="string" null="true"/>
         <field key="rank" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="true"
                default="0"/>
@@ -191,6 +192,9 @@
         <field key="class" dbtype="varchar" precision="50" phptype="string" null="true"/>
         <field key="properties" dbtype="text" phptype="json" null="true"/>
         <field key="requires" dbtype="varchar" precision="255" phptype="string" null="true" default="email,receiver"/>
+        <field key="fields" dbtype="varchar" precision="255" phptype="string" null="true" default="email,receiver"/>
+        <field key="cache_time" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="true"
+               default="0"/>
 
         <aggregate alias="Orders" class="msOrder" local="id" foreign="delivery" cardinality="many" owner="local"/>
         <aggregate alias="Payments" class="msDeliveryMember" local="id" foreign="delivery_id" cardinality="many"

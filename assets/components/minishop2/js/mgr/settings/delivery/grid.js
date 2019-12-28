@@ -24,6 +24,7 @@ Ext.extend(miniShop2.grid.Delivery, miniShop2.grid.Default, {
     getFields: function () {
         return [
             'id', 'name', 'price', 'weight_price', 'distance_price', 'rank', 'payments',
+            'time', 'fields', 'cache_time',
             'logo', 'active', 'class', 'description', 'requires', 'actions'
         ];
     },
@@ -118,6 +119,7 @@ Ext.extend(miniShop2.grid.Delivery, miniShop2.grid.Default, {
             weight_price: 0,
             distance_price: 0,
             active: true,
+            fields: ''
         });
         w.show(e.target);
     },

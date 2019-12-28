@@ -381,7 +381,7 @@
                     .on('change', miniShop2.Order.order + ' input,' + miniShop2.Order.order + ' textarea', function () {
                         var $this = $(this);
                         var key = $this.attr('name');
-                        var value = $this.val();
+                        var value = ($this.is('[type=checkbox]') || $this.is('[type=radio]')) ? ($this.is(':checked') ? $this.val() : '') : $this.val();
                         miniShop2.Order.add(key, value);
                     });
                 var $deliveryInputChecked = $(miniShop2.Order.deliveryInput + ':checked', miniShop2.Order.order);
@@ -431,7 +431,20 @@
                             break;
                         //default:
                     }
-                    $field.val(response.data[key]).removeClass('error').closest(miniShop2.Order.inputParent).removeClass('error');
+                    $field.removeClass('error').closest(miniShop2.Order.inputParent).removeClass('error');
+                    if ($field.is('select')){
+                        if ($field.children('option[value="' + response.data[key] + '"]').length > 0){
+                            $field.children('option[value="' + response.data[key] + '"]').attr('selected', true).prop('selected', true);
+                        }
+                    }
+                    else if ($field.is('[type="radio"]') || $field.is('[type="checkbox"]')){
+                        if ($field.filter('[value="' + response.data[key] + '"]:not(:checked)').length > 0) {
+                            $field.filter('[value="' + response.data[key] + '"]').attr('checked', true).prop('checked', true);
+                        }
+                    }
+                    else{
+                        $field.val(response.data[key]);
+                    }
                 })(key, value, old_value);
             };
             callbacks.add.response.error = function () {
@@ -533,6 +546,7 @@
                 for (var i = 0, length = requires.length; i < length; i++) {
                     $('[name=' + requires[i] + ']', miniShop2.Order.order).addClass('required').closest(miniShop2.Order.inputParent).addClass('required');
                 }
+                miniShop2.Order.updateDeliveryFields(response.data['fields']);
             };
             callbacks.getrequired.response.error = function () {
                 $('[name]', miniShop2.Order.order).removeClass('required').closest(miniShop2.Order.inputParent).removeClass('required');
@@ -543,6 +557,14 @@
             };
             data[miniShop2.actionName] = 'order/getrequired';
             miniShop2.send(data, miniShop2.Order.callbacks.getrequired, miniShop2.Callbacks.Order.getrequired);
+        },
+        updateDeliveryFields: function (fields){
+            $(miniShop2.Order.order).find('input,select,textarea').each(function(i, e){
+                if ($.inArray($(this).attr('name'), fields) > -1)
+                    $(e).attr('disabled', true).prop('disabled', true).parents(miniShop2.Order.inputParent).hide();
+                else
+                    $(e).attr('disabled', false).prop('disabled', false).parents(miniShop2.Order.inputParent).show();
+            });
         }
     };
 
