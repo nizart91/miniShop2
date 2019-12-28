@@ -73,6 +73,9 @@
                                         {$delivery.description}
                                     </p>
                                 {/if}
+                                <p id="delivery_cost_{$delivery.id}" style="display:none"></p>
+                                <p id="delivery_time_{$delivery.id}" style="display:none"></p>
+                                <p id="delivery_error_{$delivery.id}" style="display:none"></p>
                             </label>
                         </div>
                     {/foreach}

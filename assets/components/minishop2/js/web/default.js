@@ -368,7 +368,10 @@
             miniShop2.Order.paymentInput = 'input[name="payment"]';
             miniShop2.Order.paymentInputUniquePrefix = 'input#payment_';
             miniShop2.Order.deliveryInputUniquePrefix = 'input#delivery_';
-            miniShop2.Order.orderCost = '#ms2_order_cost'
+            miniShop2.Order.orderCost = '#ms2_order_cost';
+            miniShop2.Order.deliveryCostUniquePrefix = '#delivery_cost_';
+            miniShop2.Order.deliveryTimeUniquePrefix = '#delivery_time_';
+            miniShop2.Order.deliveryErrorUniquePrefix = '#delivery_error_';
         },
         initialize: function () {
             miniShop2.Order.setup();
@@ -378,7 +381,7 @@
                         miniShop2.Order.clean();
                         e.preventDefault();
                     })
-                    .on('change', miniShop2.Order.order + ' input,' + miniShop2.Order.order + ' textarea', function () {
+                    .on('change', miniShop2.Order.order + ' input,' + miniShop2.Order.order + ' select,' + miniShop2.Order.order + ' textarea', function () {
                         var $this = $(this);
                         var key = $this.attr('name');
                         var value = ($this.is('[type=checkbox]') || $this.is('[type=radio]')) ? ($this.is(':checked') ? $this.val() : '') : $this.val();
@@ -470,6 +473,23 @@
             var callbacks = miniShop2.Order.callbacks;
             callbacks.getcost.response.success = function (response) {
                 $(miniShop2.Order.orderCost, miniShop2.Order.order).text(miniShop2.Utils.formatPrice(response.data['cost']));
+                $.each(response.deliveries, function(id, values){
+                    $(miniShop2.Order.deliveryCostUniquePrefix + id).text(miniShop2.Utils.formatPrice(values.cost));
+
+                    if (values.time === ''){
+                        $(miniShop2.Order.deliveryTimeUniquePrefix + id).hide();
+                    }
+                    else{
+                        $(miniShop2.Order.deliveryTimeUniquePrefix + id).text(values.time).show();
+                    }
+
+                    if (values.error === ''){
+                        $(miniShop2.Order.deliveryErrorUniquePrefix + id).hide();
+                    }
+                    else{
+                        $(miniShop2.Order.deliveryErrorUniquePrefix + id).text(values.error).show();
+                    }
+                });
             };
             var data = {};
             data[miniShop2.actionName] = 'order/getcost';

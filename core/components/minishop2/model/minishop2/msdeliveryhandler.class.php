@@ -173,14 +173,6 @@ class msDeliveryCostResult
 
 
     /**
-     * Availability of delivery
-     *
-     * @var bool
-     */
-    public $available = true;
-
-
-    /**
      * Error of delivery cost
      *
      * @var string
@@ -198,7 +190,6 @@ class msDeliveryCostResult
     /**
      * @param float $cost
      * @param string $time
-     * @param bool $available
      * @param string $error
      * @param array $additional
      *
@@ -207,7 +198,6 @@ class msDeliveryCostResult
     public static function getInstance (
         $cost = 0.0,
         $time = '',
-        $available = true,
         $error = '',
         $additional = array()
     )
@@ -216,7 +206,6 @@ class msDeliveryCostResult
 
         $model->cost        = $cost;
         $model->time        = $time;
-        $model->available   = $available;
         $model->error       = $error;
         $model->additional  = $additional;
 
